@@ -1,0 +1,73 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Publish release assets
+
+on:
+  release:
+    types: ['published']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      # write permission is required to create a github release
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.20.x
+
+    - name: Mod tidy
+      run: go mod tidy
+
+    - name: Linux build
+      run: |
+        go build -o cmd/excessive-acl .
+        cd ./cmd
+        tar -czf excessive-acl-linux-${{ github.event.release.tag_name }}.tar.gz ./excessive-acl
+        rm ./excessive-acl
+
+    - name: Windows build
+      run: |
+        GOOS=windows GOARCH=amd64 go build -o cmd/excessive-acl.exe .
+        cd ./cmd
+        zip excessive-acl-windows-${{ github.event.release.tag_name }}.zip ./excessive-acl.exe
+        rm ./excessive-acl.exe
+
+    - name: Darwin build
+      run: |
+        GOOS=darwin GOARCH=amd64 go build -o cmd/excessive-acl .
+        cd ./cmd
+        tar -czf excessive-acl-darwin-${{ github.event.release.tag_name }}.tar.gz ./excessive-acl
+        rm ./excessive-acl
+
+    - name: Upload release assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          cmd/excessive-acl-darwin-${{ github.event.release.tag_name }}.tar.gz
+          cmd/excessive-acl-linux-${{ github.event.release.tag_name }}.tar.gz
+          cmd/excessive-acl-windows-${{ github.event.release.tag_name }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload linux artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: excessive-acl-linux-${{ github.event.release.tag_name }}.tar.gz
+        path: cmd/excessive-acl-linux-${{ github.event.release.tag_name }}.tar.gz
+
+    - name: Upload windows artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: excessive-acl-windows-${{ github.event.release.tag_name }}.zip
+        path: cmd/excessive-acl-windows-${{ github.event.release.tag_name }}.tar.gz
+
+
+
+
+
