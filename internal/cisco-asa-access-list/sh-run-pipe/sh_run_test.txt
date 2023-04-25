@@ -1,0 +1,11 @@
+object-group network OMNI-INET
+ network-object 10.100.0.0 255.255.0.0
+ network-object 10.101.0.0 255.255.0.0
+object service NTP_source
+ service udp source eq ntp
+object service NTP_destination
+ service udp destination eq ntp
+object service NTP
+ service udp source eq ntp destination eq ntp
+object service ICMP
+ service icmp echo 0
