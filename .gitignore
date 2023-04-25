@@ -3,3 +3,4 @@ swagger*
 __debug_bin
 examples/sh_run
 examples/*.prod
+*.exe

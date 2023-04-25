@@ -1,0 +1,22 @@
+# --- HTTP POST request example
+WebKitFormBoundary[a-zA-Z0-9]*
+Content-Disposition\:.*
+Content-Type\:.*
+
+# --- sessid
+sessid=[a-zA-Z0-9]*
+
+# --- uuid:
+\{[0-9A-FA-F]{8}-(?:[0-9A-FA-F]{4}-){3}[0-9A-FA-F]{12}\}
+# [-4yx]+
+
+
+# --- URL-s
+https?://(?:(?:www\.|)youtube\.com|youtu.be)/[-a-zA-Z0-9?&=]*
+https?://.*
+
+# --- copyright
+[a-zA-Z0-9]+@[a-zA-Z0-9]+\.com
+
+# --- random
+rand\=x+
