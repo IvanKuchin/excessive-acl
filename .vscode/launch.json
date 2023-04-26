@@ -28,7 +28,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/main.go",
-            "args": ["-r", "examples/sh_run", "-s", "examples/syslog"],
+            "args": ["-r", "examples/sh_run.prod", "-s", "examples/syslog"],
         }
     ]
 }
