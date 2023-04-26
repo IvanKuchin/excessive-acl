@@ -153,6 +153,7 @@ func init() {
 	}
 
 	tcp_ports = []TcpPorts{
+		{2049, "nfs"},
 		{500, "isakmp"},
 		{554, "rtsp"},
 		{67, "bootps"},

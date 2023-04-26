@@ -105,6 +105,10 @@ object-group protocol TCPUDP
  protocol-object udp
  protocol-object tcp
 
+object network test.com_fqdn
+ description expected IP 67.225.146.248
+ fqdn test.com
+
 access-list inside_in extended permit object-group OMNI-PORTS object-group OMNI-INET any4 log 
 access-list inside_in extended permit object NTP object-group OMNI-INET any4 log 
 access-list inside_in extended permit ip object-group MY-NETS object-group RFC1918 

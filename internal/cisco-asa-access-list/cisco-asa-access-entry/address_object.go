@@ -1,9 +1,11 @@
 package ciscoasaaccessentry
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"net/netip"
 	"strconv"
 	"strings"
@@ -130,82 +132,112 @@ func parseSubnet(parsing_pos uint, fields []string) (uint, addressObject, error)
 	return parsing_pos + 2, _address_object, nil
 }
 
-func parseAddressObjectContent(fields []string) (addressObject, error) {
-	var _address_object addressObject
+func parseFQDN(fqdn string) ([]addressObject, error) {
+	var _address_objects []addressObject
+
+	ips, err := net.LookupIP(fqdn)
+	if err != nil {
+		error_string := "ERROR: failed to resolve " + fqdn
+		log.Print(error_string)
+		return nil, errors.New(error_string)
+	}
+
+	for _, ip := range ips {
+		if ip.To4() == nil {
+			fmt.Printf("Skipping IPv6 address: %s in %s name resolution\n", ip.String(), fqdn)
+			continue
+		}
+		_address_object := addressObject{start: binary.BigEndian.Uint32(ip.To4()), finish: binary.BigEndian.Uint32(ip.To4())}
+		_address_objects = append(_address_objects, _address_object)
+	}
+
+	return _address_objects, nil
+}
+
+func parseAddressObjectContent(fields []string) ([]addressObject, error) {
+	var _address_objects []addressObject
 
 	switch fields[0] {
+	case "fqdn":
+		if len(fields) < 2 {
+			error_string := "ERROR: not enough fields to parse fqdn in address object"
+			log.Print(error_string, "(", fields, ")")
+			return nil, errors.New(error_string)
+		}
+
+		_ao, err := parseFQDN(fields[1])
+		if err != nil {
+			return nil, err
+		}
+		_address_objects = append(_address_objects, _ao...)
+		return _address_objects, nil
 	case "host":
 		if len(fields) < 2 {
 			error_string := "ERROR: not enough fields to parse host in address object"
 			log.Print(error_string, "(", fields, ")")
-			return _address_object, errors.New(error_string)
+			return nil, errors.New(error_string)
 		}
 
 		ip, err := parseIP(fields[1])
 		if err != nil {
-			return _address_object, err
+			return nil, err
 		}
+		_address_objects = append(_address_objects, addressObject{start: ip, finish: ip})
 
-		_address_object.start = ip
-		_address_object.finish = ip
-
-		return _address_object, nil
+		return _address_objects, nil
 	case "subnet":
 		if len(fields) < 3 {
 			error_string := "ERROR: not enough fields to parse subnet in address object"
 			log.Print(error_string, "(", fields, ")")
-			return _address_object, errors.New(error_string)
+			return nil, errors.New(error_string)
 		}
 
 		_, _address_object, err := parseSubnet(1, fields)
 		if err != nil {
-			return _address_object, err
+			return nil, err
 		}
+		_address_objects = append(_address_objects, _address_object)
 
-		return _address_object, nil
+		return _address_objects, nil
 	case "range":
 		if len(fields) < 3 {
 			error_string := "ERROR: not enough fields to parse range in address object"
 			log.Print(error_string, "(", fields, ")")
-			return _address_object, errors.New(error_string)
+			return nil, errors.New(error_string)
 		}
 
 		start, err := parseIP(fields[1])
 		if err != nil {
-			return _address_object, err
+			return nil, err
 		}
 
 		finish, err := parseIP(fields[2])
 		if err != nil {
-			return _address_object, err
+			return nil, err
 		}
 
-		_address_object.start = start
-		_address_object.finish = finish
+		_address_objects = append(_address_objects, addressObject{start: start, finish: finish})
 
-		return _address_object, nil
+		return _address_objects, nil
 	default:
 		error_string := "ERROR: failed to parse address object"
 		log.Print(error_string, "(", fields, ")")
-		return _address_object, errors.New(error_string)
+		return nil, errors.New(error_string)
 	}
 }
 
-func parseAddressObject(name string) (addressObject, error) {
-	var _address_object addressObject
-
+func parseAddressObject(name string) ([]addressObject, error) {
 	address_object_text := sh_run_pipe.SectionExact("object network " + name).Exclude("object network " + name).Exclude("description ").Exclude(" nat ")
 	if address_object_text.Len() != 1 {
 		error_message := "object network must have only 1 line in it. object network " + name + " is " + strconv.Itoa(int(address_object_text.Len())) + " lines."
 		log.Printf("ERROR: %s", error_message)
-		return _address_object, errors.New(error_message)
+		return nil, errors.New(error_message)
 	}
 
 	address_object_line, err := address_object_text.Get(0)
 	if err != nil {
-		return _address_object, err
+		return nil, err
 	}
-
 	fields := strings.Fields(address_object_line)
 
 	return parseAddressObjectContent(fields)
@@ -244,7 +276,7 @@ func parseAddressObjectGroup(name string) ([]addressObject, error) {
 				if err != nil {
 					return nil, err
 				}
-				address_object_group = append(address_object_group, _ao)
+				address_object_group = append(address_object_group, _ao...)
 			case "host":
 				if len(fields) != 3 {
 					error_message := "address-object host must have 3 fields in it. address-object host " + name + " is " + strconv.Itoa(len(fields)) + " fields."
@@ -256,7 +288,7 @@ func parseAddressObjectGroup(name string) ([]addressObject, error) {
 				if err != nil {
 					return nil, err
 				}
-				address_object_group = append(address_object_group, _ao)
+				address_object_group = append(address_object_group, _ao...)
 			default:
 				if len(fields) < 3 {
 					error_string := "ERROR: not enough fields to parse subnet in address object"
@@ -309,7 +341,7 @@ func getAddressObjects(parsing_pos uint, fields []string) (uint, []addressObject
 		if err != nil {
 			return 0, nil, err
 		}
-		address_objects = append(address_objects, _address_object)
+		address_objects = append(address_objects, _address_object...)
 
 		// --- set parsing position to a next block
 		parsing_pos += 2

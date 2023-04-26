@@ -268,7 +268,7 @@ func Test_parseAddressObjectContent(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    addressObject
+		want    []addressObject
 		wantErr bool
 	}{
 		{
@@ -276,9 +276,11 @@ func Test_parseAddressObjectContent(t *testing.T) {
 			args: args{
 				fields: []string{"host", "1.2.3.4"},
 			},
-			want: addressObject{
-				uint32(1)<<24 + uint32(2)<<16 + uint32(3)<<8 + uint32(4),
-				uint32(1)<<24 + uint32(2)<<16 + uint32(3)<<8 + uint32(4),
+			want: []addressObject{
+				{
+					uint32(1)<<24 + uint32(2)<<16 + uint32(3)<<8 + uint32(4),
+					uint32(1)<<24 + uint32(2)<<16 + uint32(3)<<8 + uint32(4),
+				},
 			},
 			wantErr: false,
 		},
@@ -287,9 +289,11 @@ func Test_parseAddressObjectContent(t *testing.T) {
 			args: args{
 				fields: []string{"subnet", "10.11.12.0", "255.255.255.0"},
 			},
-			want: addressObject{
-				uint32(10)<<24 + uint32(11)<<16 + uint32(12)<<8 + uint32(0),
-				uint32(10)<<24 + uint32(11)<<16 + uint32(12)<<8 + uint32(0) | ^(uint32(255)<<24 + uint32(255)<<16 + uint32(255)<<8 + uint32(0)),
+			want: []addressObject{
+				{
+					uint32(10)<<24 + uint32(11)<<16 + uint32(12)<<8 + uint32(0),
+					uint32(10)<<24 + uint32(11)<<16 + uint32(12)<<8 + uint32(0) | ^(uint32(255)<<24 + uint32(255)<<16 + uint32(255)<<8 + uint32(0)),
+				},
 			},
 			wantErr: false,
 		},
@@ -298,9 +302,11 @@ func Test_parseAddressObjectContent(t *testing.T) {
 			args: args{
 				fields: []string{"range", "172.16.17.18", "172.16.17.99"},
 			},
-			want: addressObject{
-				uint32(172)<<24 + uint32(16)<<16 + uint32(17)<<8 + uint32(18),
-				uint32(172)<<24 + uint32(16)<<16 + uint32(17)<<8 + uint32(99),
+			want: []addressObject{
+				{
+					uint32(172)<<24 + uint32(16)<<16 + uint32(17)<<8 + uint32(18),
+					uint32(172)<<24 + uint32(16)<<16 + uint32(17)<<8 + uint32(99),
+				},
 			},
 			wantErr: false,
 		},
@@ -309,7 +315,7 @@ func Test_parseAddressObjectContent(t *testing.T) {
 			args: args{
 				fields: []string{"unknown"},
 			},
-			want:    addressObject{},
+			want:    nil,
 			wantErr: true,
 		},
 	}
@@ -334,7 +340,7 @@ func Test_parseAddressObject(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    addressObject
+		want    []addressObject
 		wantErr bool
 	}{
 		{
@@ -342,9 +348,11 @@ func Test_parseAddressObject(t *testing.T) {
 			args: args{
 				name: "SMALL-DC-RI",
 			},
-			want: addressObject{
-				uint32(192)<<24 + uint32(168)<<16 + uint32(50)<<8 + uint32(50),
-				uint32(192)<<24 + uint32(168)<<16 + uint32(50)<<8 + uint32(50),
+			want: []addressObject{
+				{
+					uint32(192)<<24 + uint32(168)<<16 + uint32(50)<<8 + uint32(50),
+					uint32(192)<<24 + uint32(168)<<16 + uint32(50)<<8 + uint32(50),
+				},
 			},
 			wantErr: false,
 		},
@@ -353,9 +361,11 @@ func Test_parseAddressObject(t *testing.T) {
 			args: args{
 				name: "SMALL-DC-NH",
 			},
-			want: addressObject{
-				uint32(192)<<24 + uint32(168)<<16 + uint32(170)<<8 + uint32(0),
-				uint32(192)<<24 + uint32(168)<<16 + uint32(170)<<8 + uint32(0) | ^(uint32(255)<<24 + uint32(255)<<16 + uint32(255)<<8 + uint32(0)),
+			want: []addressObject{
+				{
+					uint32(192)<<24 + uint32(168)<<16 + uint32(170)<<8 + uint32(0),
+					uint32(192)<<24 + uint32(168)<<16 + uint32(170)<<8 + uint32(0) | ^(uint32(255)<<24 + uint32(255)<<16 + uint32(255)<<8 + uint32(0)),
+				},
 			},
 			wantErr: false,
 		},
@@ -364,9 +374,11 @@ func Test_parseAddressObject(t *testing.T) {
 			args: args{
 				name: "SMALL-DC-MA",
 			},
-			want: addressObject{
-				uint32(192)<<24 + uint32(168)<<16 + uint32(100)<<8 + uint32(50),
-				uint32(192)<<24 + uint32(168)<<16 + uint32(100)<<8 + uint32(89),
+			want: []addressObject{
+				{
+					uint32(192)<<24 + uint32(168)<<16 + uint32(100)<<8 + uint32(50),
+					uint32(192)<<24 + uint32(168)<<16 + uint32(100)<<8 + uint32(89),
+				},
 			},
 			wantErr: false,
 		},
@@ -375,8 +387,21 @@ func Test_parseAddressObject(t *testing.T) {
 			args: args{
 				name: "unknown",
 			},
-			want:    addressObject{},
+			want:    nil,
 			wantErr: true,
+		},
+		{
+			name: "fqdn",
+			args: args{
+				name: "test.com_fqdn",
+			},
+			want: []addressObject{
+				{
+					uint32(67)<<24 + uint32(225)<<16 + uint32(146)<<8 + uint32(248),
+					uint32(67)<<24 + uint32(225)<<16 + uint32(146)<<8 + uint32(248),
+				},
+			},
+			wantErr: false,
 		},
 	}
 	sh_run_pipe.Load("sh_run_test.txt")
