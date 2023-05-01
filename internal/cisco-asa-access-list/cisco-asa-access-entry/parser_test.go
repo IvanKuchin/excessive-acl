@@ -6,6 +6,7 @@ import (
 
 	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/sh-run-pipe"
 	"github.com/ivankuchin/excessive-acl/internal/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/utils"
 )
 
 func TestParse(t *testing.T) {
@@ -32,13 +33,13 @@ func TestParse(t *testing.T) {
 							Id:    1,
 							Title: "icmp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0b0c0d,
-							finish: 0x0a0b0c0d,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0b0c0d,
+							Finish: 0x0a0b0c0d,
 						},
-						dst_addr_range: addressObject{
-							start:  0x00000000,
-							finish: 0xffffffff,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x00000000,
+							Finish: 0xffffffff,
 						},
 						icmp: icmp_type_code{-1, -1},
 					},
@@ -60,13 +61,13 @@ func TestParse(t *testing.T) {
 							Id:    1,
 							Title: "icmp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0b0c0d,
-							finish: 0x0a0b0c0d,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0b0c0d,
+							Finish: 0x0a0b0c0d,
 						},
-						dst_addr_range: addressObject{
-							start:  0x00000000,
-							finish: 0xffffffff,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x00000000,
+							Finish: 0xffffffff,
 						},
 						icmp: icmp_type_code{8, -1},
 					},
@@ -88,13 +89,13 @@ func TestParse(t *testing.T) {
 							Id:    4,
 							Title: "ipv4",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0b0c0d,
-							finish: 0x0a0b0c0d,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0b0c0d,
+							Finish: 0x0a0b0c0d,
 						},
-						dst_addr_range: addressObject{
-							start:  0x00000000,
-							finish: 0xffffffff,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x00000000,
+							Finish: 0xffffffff,
 						},
 						icmp: icmp_type_code{-1, -1},
 					},
@@ -116,13 +117,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						icmp: icmp_type_code{-1, -1},
 					},
@@ -144,13 +145,13 @@ func TestParse(t *testing.T) {
 							Id:    17,
 							Title: "udp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						src_port_range: port_range{
 							start:  123,
@@ -180,13 +181,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						src_port_range: port_range{
 							start:  1024,
@@ -216,13 +217,13 @@ func TestParse(t *testing.T) {
 							Id:    17,
 							Title: "udp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						src_port_range: port_range{
 							start:  0,
@@ -240,13 +241,13 @@ func TestParse(t *testing.T) {
 							Id:    17,
 							Title: "udp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						src_port_range: port_range{
 							start:  124,
@@ -276,13 +277,13 @@ func TestParse(t *testing.T) {
 							Id:    17,
 							Title: "udp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						dst_port_range: port_range{
 							start:  19,
@@ -308,13 +309,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						dst_port_range: port_range{
 							start:  3306,
@@ -328,13 +329,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						dst_port_range: port_range{
 							start:  20,
@@ -348,13 +349,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a0a0a0a,
-							finish: 0x0a0a0a0a,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a0a,
+							Finish: 0x0a0a0a0a,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						dst_port_range: port_range{
 							start:  21,
@@ -380,13 +381,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a640000,
-							finish: 0x0a64ffff,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a640000,
+							Finish: 0x0a64ffff,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						icmp: icmp_type_code{-1, -1},
 					},
@@ -396,13 +397,13 @@ func TestParse(t *testing.T) {
 							Id:    6,
 							Title: "tcp",
 						},
-						src_addr_range: addressObject{
-							start:  0x0a650000,
-							finish: 0x0a65ffff,
+						src_addr_range: utils.AddressObject{
+							Start:  0x0a650000,
+							Finish: 0x0a65ffff,
 						},
-						dst_addr_range: addressObject{
-							start:  0x0a0a0a01,
-							finish: 0x0a0a0a01,
+						dst_addr_range: utils.AddressObject{
+							Start:  0x0a0a0a01,
+							Finish: 0x0a0a0a01,
 						},
 						icmp: icmp_type_code{-1, -1},
 					},

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/ivankuchin/excessive-acl/internal/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/utils"
 )
 
 func tryToIdentifyAndParseServiceInsideACE(src_dst string, parsing_pos uint, fields []string, service_objects []serviceObject) (uint, error) {
@@ -60,7 +61,7 @@ func getAction(action string) (action, error) {
 	}
 }
 
-func (ace *AccessEntry) compileACE(act action, serviceObjects []serviceObject, srcAddresses, dstAddresses []addressObject) error {
+func (ace *AccessEntry) compileACE(act action, serviceObjects []serviceObject, srcAddresses, dstAddresses []utils.AddressObject) error {
 	ace.compiled = []accessEntryCompiled{}
 
 	for _, svcObj := range serviceObjects {
@@ -177,33 +178,33 @@ func (ace *AccessEntry) Print() {
 		fmt.Printf("  %v %v %v-%v",
 			compiled.action,
 			compiled.proto.Title,
-			ipToString(compiled.src_addr_range.start), ipToString(compiled.src_addr_range.finish),
+			utils.IpToString(compiled.src_addr_range.Start), utils.IpToString(compiled.src_addr_range.Finish),
 		)
 		switch {
 		case compiled.icmp.icmp_code != -1 || compiled.icmp.icmp_type != -1:
 			fmt.Printf("  %v-%v %v %v\n",
-				ipToString(compiled.dst_addr_range.start), ipToString(compiled.dst_addr_range.finish),
+				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
 				compiled.icmp.icmp_type, compiled.icmp.icmp_code,
 			)
 		case compiled.src_port_range.finish != 0 && compiled.dst_port_range.finish != 0:
 			fmt.Printf(":%v-%v %v-%v:%v-%v\n",
 				compiled.src_port_range.start, compiled.src_port_range.finish,
-				ipToString(compiled.dst_addr_range.start), ipToString(compiled.dst_addr_range.finish),
+				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
 				compiled.dst_port_range.start, compiled.dst_port_range.finish,
 			)
 		case compiled.src_port_range.finish != 0:
 			fmt.Printf(":%v-%v %v-%v\n",
 				compiled.src_port_range.start, compiled.src_port_range.finish,
-				ipToString(compiled.dst_addr_range.start), ipToString(compiled.dst_addr_range.finish),
+				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
 			)
 		case compiled.dst_port_range.finish != 0:
 			fmt.Printf(" %v-%v:%v-%v\n",
-				ipToString(compiled.dst_addr_range.start), ipToString(compiled.dst_addr_range.finish),
+				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
 				compiled.dst_port_range.start, compiled.dst_port_range.finish,
 			)
 		default:
 			fmt.Printf(" %v-%v\n",
-				ipToString(compiled.dst_addr_range.start), ipToString(compiled.dst_addr_range.finish),
+				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
 			)
 
 		}
