@@ -1,9 +1,8 @@
 package ciscoasaaccessentry
 
 import (
-	"net/netip"
-
 	"github.com/ivankuchin/excessive-acl/internal/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/utils"
 )
 
 type action int
@@ -19,11 +18,6 @@ type port_range struct {
 	finish port
 }
 
-type addr_range struct {
-	start  netip.Addr
-	finish netip.Addr
-}
-
 type icmp_type_code struct {
 	icmp_type int
 	icmp_code int
@@ -34,8 +28,8 @@ type accessEntryCompiled struct {
 	proto  *network_entities.Protocol
 
 	// --- ip part
-	src_addr_range addressObject
-	dst_addr_range addressObject
+	src_addr_range utils.AddressObject
+	dst_addr_range utils.AddressObject
 
 	// --- tcp/udp part
 	src_port_range port_range
@@ -50,11 +44,6 @@ type serviceObject struct {
 	src_port_range []port_range
 	dst_port_range []port_range
 	icmp           []icmp_type_code
-}
-
-type addressObject struct {
-	start  uint32
-	finish uint32
 }
 
 type AccessEntry struct {
