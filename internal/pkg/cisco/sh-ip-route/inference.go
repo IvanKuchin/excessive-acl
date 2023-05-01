@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ivankuchin/excessive-acl/internal/utils"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func (re *routingEntry) getIface(ip uint32) (string, error) {
@@ -23,6 +23,7 @@ func (re *routingEntry) getIface(ip uint32) (string, error) {
 				}
 			}
 		}
+		return re.iface, nil
 	}
 
 	return "", nil

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ivankuchin/excessive-acl/internal/utils"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func Test_parseRoutingEntryStaticAndConnected(t *testing.T) {

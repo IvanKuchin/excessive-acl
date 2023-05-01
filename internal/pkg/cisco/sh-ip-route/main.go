@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+func init() {
+	ifaces = make(map[string]string)
+}
+
 func readFile(in_file string) ([]string, error) {
 	readFile, err := os.Open(in_file)
 	if err != nil {
@@ -39,7 +43,6 @@ func cutoffHeader(f_content []string) []string {
 
 func Fit(fname string) (RoutingTable, error) {
 	var routing_table RoutingTable
-	ifaces = make(map[string]string)
 
 	f_content, err := readFile(fname)
 	if err != nil {

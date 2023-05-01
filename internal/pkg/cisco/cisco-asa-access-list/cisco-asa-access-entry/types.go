@@ -1,8 +1,8 @@
 package ciscoasaaccessentry
 
 import (
-	"github.com/ivankuchin/excessive-acl/internal/network_entities"
-	"github.com/ivankuchin/excessive-acl/internal/utils"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 type action int

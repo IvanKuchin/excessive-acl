@@ -1,8 +1,6 @@
 package sh_ip_route
 
-import (
-	"github.com/ivankuchin/excessive-acl/internal/utils"
-)
+import "github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 
 type routingEntry struct {
 	prefix   utils.AddressObject
