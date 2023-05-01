@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/sh-run-pipe"
-	"github.com/ivankuchin/excessive-acl/internal/network_entities"
-	"github.com/ivankuchin/excessive-acl/internal/utils"
+	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/sh-run-pipe"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func TestParse(t *testing.T) {
@@ -412,7 +412,7 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := Parse(tt.args.ace_text)

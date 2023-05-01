@@ -1,0 +1,27 @@
+ASA Version 9.15(1)1 
+!
+hostname ciscoasa
+enable password ***** pbkdf2
+service-module 0 keepalive-timeout 4
+service-module 0 keepalive-counter 6
+names
+no mac-address auto
+
+!
+interface GigabitEthernet0/0
+ nameif inside
+ security-level 100
+ ip address 192.168.0.1 255.255.255.0 
+!
+interface GigabitEthernet0/1
+ nameif outside
+ security-level 0
+ ip address 123.123.123.1 255.255.255.0 
+!
+interface Management0/0
+ no management-only
+ shutdown     
+ no nameif
+ no security-level
+ no ip address
+!

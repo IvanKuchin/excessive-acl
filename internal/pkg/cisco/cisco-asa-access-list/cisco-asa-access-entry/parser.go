@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ivankuchin/excessive-acl/internal/network_entities"
-	"github.com/ivankuchin/excessive-acl/internal/utils"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func tryToIdentifyAndParseServiceInsideACE(src_dst string, parsing_pos uint, fields []string, service_objects []serviceObject) (uint, error) {

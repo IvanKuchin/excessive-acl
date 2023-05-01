@@ -3,7 +3,7 @@ package ciscoasaaccesslist
 import (
 	"errors"
 
-	cisco_asa_access_entry "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/cisco-asa-access-entry"
+	cisco_asa_access_entry "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/cisco-asa-access-entry"
 )
 
 type Accesslist struct {

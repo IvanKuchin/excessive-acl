@@ -5,7 +5,7 @@ import (
 )
 
 var Sh_run string
-var Sh_ip_route string
+var Sh_route string
 var Syslog string
 
 var rootCmd = &cobra.Command{
@@ -23,7 +23,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&Syslog, "syslog", "s", "", "syslog file")
 	rootCmd.MarkFlagRequired("syslog")
 
-	rootCmd.Flags().StringVarP(&Sh_ip_route, "sh-ip-route", "i", "", "file with \"show ip route\" output")
+	rootCmd.Flags().StringVarP(&Sh_route, "sh-ip-route", "i", "", "file with \"show ip route\" output")
 	rootCmd.MarkFlagRequired("sh-ip-route")
 }
 

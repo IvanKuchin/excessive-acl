@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/sh-run-pipe"
-	"github.com/ivankuchin/excessive-acl/internal/network_entities"
+	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/sh-run-pipe"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 )
 
 // evaluate if service object tcp/udp/tcp-udp is at a position

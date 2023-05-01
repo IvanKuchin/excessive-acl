@@ -25,7 +25,7 @@ func Test_SectionExact(t *testing.T) {
 			},
 		},
 	}
-	Load("sh_run_test.txt")
+	Load("testdata/sh_run_test.txt")
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -60,7 +60,7 @@ func Test_Section(t *testing.T) {
 			},
 		},
 	}
-	// Load("sh_run_test.txt")
+	// Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Section(tt.args.pattern); !reflect.DeepEqual(got, tt.want) {
@@ -128,7 +128,7 @@ func TestExact(t *testing.T) {
 			},
 		},
 	}
-	Load("sh_run_test.txt")
+	Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Exact(tt.args.pattern); !reflect.DeepEqual(got, tt.want) {
@@ -159,7 +159,7 @@ func TestInclude(t *testing.T) {
 			},
 		},
 	}
-	Load("sh_run_test.txt")
+	Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Include(tt.args.pattern); !reflect.DeepEqual(got, tt.want) {

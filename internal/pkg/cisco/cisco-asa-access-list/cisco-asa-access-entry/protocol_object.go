@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/sh-run-pipe"
+	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/sh-run-pipe"
 )
 
 func isProtocolObjectGroup(name string) bool {

@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ivankuchin/excessive-acl/internal/utils"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func isRecursiveRoute(fields []string) bool {

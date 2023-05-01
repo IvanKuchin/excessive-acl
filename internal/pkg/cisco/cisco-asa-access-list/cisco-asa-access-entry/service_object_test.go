@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/sh-run-pipe"
-	"github.com/ivankuchin/excessive-acl/internal/network_entities"
+	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/sh-run-pipe"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 )
 
 func Test_isServiceAtAPosition(t *testing.T) {
@@ -110,7 +110,7 @@ func Test_isServiceAtAPosition(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := isServiceAtAPosition(tt.args.parsing_pos, tt.args.fields)
@@ -176,7 +176,7 @@ func Test_isServiceAtAPositionTCPUDP(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := isServiceAtAPositionTCPUDP(tt.args.name)
@@ -456,7 +456,7 @@ func Test_parsePortGroup(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := parsePortGroup(tt.args.name)
@@ -727,7 +727,7 @@ func Test_parseServiceObject(t *testing.T) {
 			wantErr: true,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := parseServiceObject(tt.args.name)
@@ -828,7 +828,7 @@ func Test_parseServiceObjectGroup(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := parseServiceObjectGroup(tt.args.name)
@@ -964,7 +964,7 @@ func Test_getProtocolOrServiceObject(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	sh_run_pipe.Load("sh_run_test.txt")
+	sh_run_pipe.Load("testdata/sh_run_test.txt")
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, got1, err := getProtocolOrServiceObject(tt.args.parsing_pos, tt.args.fields)

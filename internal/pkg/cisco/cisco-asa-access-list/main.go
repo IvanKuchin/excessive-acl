@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	cisco_asa_access_group "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-group"
-	cisco_asa_access_entry "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/cisco-asa-access-entry"
-	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/cisco-asa-access-list/sh-run-pipe"
+	cisco_asa_access_group "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-group"
+	cisco_asa_access_entry "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/cisco-asa-access-entry"
+	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/sh-run-pipe"
 )
 
 func compileACL(acl_name string) (Accesslist, error) {
