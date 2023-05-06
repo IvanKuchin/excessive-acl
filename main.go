@@ -52,13 +52,13 @@ func main() {
 
 	routing_table.PrintTree()
 
-	ctx := syslog.Context{
+	ctx := syslog.AppContext{
 		Access_groups: access_groups,
 		Access_lists:  access_lists,
 		Routing_table: routing_table,
 	}
 
-	err = syslog.Parse(ctx, syslog_file)
+	err = syslog.Fit(ctx, syslog_file)
 	if err != nil {
 		log.Fatal(err)
 	}

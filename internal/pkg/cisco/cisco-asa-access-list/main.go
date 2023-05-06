@@ -7,11 +7,12 @@ import (
 	cisco_asa_access_group "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-group"
 	cisco_asa_access_entry "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/cisco-asa-access-entry"
 	sh_run_pipe "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list/sh-run-pipe"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 )
 
 func compileACL(acl_name string) (Accesslist, error) {
 	var acl Accesslist
-	acl.name = acl_name
+	acl.Name = acl_name
 
 	acl_text := sh_run_pipe.Prefix("access-list " + acl_name)
 
@@ -52,8 +53,22 @@ func Parse(in_file string, access_groups []cisco_asa_access_group.Accessgroup) (
 	return acls, nil
 }
 
+func (a *Accesslist) AddFlow(flow network_entities.Flow) error {
+	for i, _ := range a.aces {
+		flow_added, err := a.aces[i].AddFlow(flow)
+		if err != nil {
+			return err
+		}
+		if flow_added {
+			return nil
+		}
+	}
+
+	return nil
+}
+
 func (a Accesslist) Print() {
-	fmt.Printf("ACL %s\n", a.name)
+	fmt.Printf("ACL %s\n", a.Name)
 
 	for _, ace := range a.aces {
 		ace.Print()

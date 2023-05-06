@@ -6,7 +6,7 @@ import (
 	sh_ip_route "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/sh-ip-route"
 )
 
-type Context struct {
+type AppContext struct {
 	Access_groups []cisco_asa_acg.Accessgroup
 	Access_lists  []cisco_asa_acl.Accesslist
 	Routing_table sh_ip_route.RoutingTable

@@ -15,12 +15,12 @@ func isAccessGroup(str string) (*Accessgroup, error) {
 			if len(fields) == 5 {
 				var direction direction
 				if fields[2] == "in" {
-					direction = inbound
+					direction = Inbound
 				} else {
-					direction = outbound
+					direction = Outbound
 				}
 
-				return &Accessgroup{iface: fields[4], Acl_name: fields[1], direction: direction}, nil
+				return &Accessgroup{Iface: fields[4], Acl_name: fields[1], Direction: direction}, nil
 			}
 		}
 	}

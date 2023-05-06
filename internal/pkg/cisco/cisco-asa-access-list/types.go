@@ -7,7 +7,7 @@ import (
 )
 
 type Accesslist struct {
-	name string
+	Name string
 	aces []cisco_asa_access_entry.AccessEntry
 }
 

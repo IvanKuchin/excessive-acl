@@ -3,11 +3,11 @@ package ciscoasaaccessgroup
 type direction int
 
 const (
-	inbound direction = iota
-	outbound
+	Inbound direction = iota
+	Outbound
 )
 
 type Accessgroup struct {
-	iface, Acl_name string
-	direction       direction
+	Iface, Acl_name string
+	Direction       direction
 }

@@ -9,10 +9,14 @@ no mac-address auto
 
 !
 interface GigabitEthernet0/0
- shutdown
- no nameif
- no security-level
- no ip address
+ nameif inside
+ security-level 100
+ ip address 192.168.0.1 255.255.255.0 
+!
+interface GigabitEthernet0/1
+ nameif outside
+ security-level 0
+ ip address 123.123.123.1 255.255.255.0 
 !
 interface Management0/0
  no management-only
@@ -82,28 +86,28 @@ object-group service MySQL-FTP tcp
  group-object MySQL
  group-object FTP
 
-object-group service PBM21283-JumpBox-Ports
+object-group service DLINK-JumpBox-Ports
  service-object tcp destination eq www 
  service-object tcp destination eq https 
  service-object tcp destination eq 902 
  service-object tcp destination eq 903 
  service-object tcp destination eq ssh 
-object-group network PBM21283
- network-object host 10.123.142.50
- network-object host 10.123.142.51
- network-object host 10.123.142.52
-object-group network PBM21283-JumpBox
- network-object host 10.228.8.78
- network-object host 10.228.8.71
- network-object host 10.124.64.130
- network-object host 10.228.20.35
- network-object host 10.228.20.34
- network-object host 10.124.64.129
- network-object host 10.124.64.128
- network-object host 10.228.8.58
- network-object host 10.124.64.127
+object-group network DLINK
+ network-object host 10.12.14.16
+object-group network DLINK-JumpBox
+ network-object host 11.13.15.17
 
-access-list inside_in extended permit object-group PBM21283-JumpBox-Ports object-group PBM21283 object-group PBM21283-JumpBox 
+object-group protocol TCPUDP
+ protocol-object udp
+ protocol-object tcp
+
+object network dnschecker.org_fqdn
+ fqdn dnschecker.com
+
+access-list inside_in extended permit object-group TCPUDP object dnschecker.org_fqdn eq ntp host 2.3.4.5 eq 123 
+access-list inside_in extended permit object-group TCPUDP host 1.2.3.4 eq ntp host 2.3.4.5 eq 123 
+access-list inside_in extended permit ip object-group MY-NETS object-group RFC1918 
+access-list inside_in extended permit object-group DLINK-JumpBox-Ports object-group DLINK object-group DLINK-JumpBox 
 access-list inside_in extended permit icmp object-group US-NE any4 time-exceeded 4
 access-list inside_in extended permit tcp object-group OMNI-INET any4 log 
 access-list inside_in extended permit tcp object SMALL-DC-NH object SMALL-DC-MA eq www 
@@ -117,7 +121,7 @@ access-list inside_in extended permit object-group OMNI-PORTS object-group OMNI-
 access-list inside_in extended permit object-group OMNI-PORTS-PARENT object-group OMNI-INET any4 log 
 access-list inside_in extended permit object NTP object-group OMNI-INET any4 log 
 access-list inside_in extended permit object ICMP object-group OMNI-INET any4 log 
-access-list inside_in extended permit ip object-group MY-NETS object-group RFC1918 
+
 access-list inside_in extended permit tcp host 10.10.10.10 host 10.10.10.1 neq 80
 access-list inside_in extended permit udp host 10.10.10.11 eq ntp 192.168.1.0 255.255.255.0 eq ntp 
 access-list inside_in extended permit ip host 10.10.10.12 host 10.10.10.12
