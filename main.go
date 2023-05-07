@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 
+	app_context "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/app-context"
 	cisco_asa_acg "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-group"
 	cisco_asa_acl "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list"
 	sh_ip_route "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/sh-ip-route"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/cisco/syslog"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/cmd"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 )
 
 func main() {
@@ -52,13 +54,14 @@ func main() {
 
 	routing_table.PrintTree()
 
-	ctx := syslog.AppContext{
+	app_ctx := app_context.AppContext{
 		Access_groups: access_groups,
 		Access_lists:  access_lists,
 		Routing_table: routing_table,
 	}
+	app_ctx.Flows = make(chan network_entities.Flow, 100)
 
-	err = syslog.Fit(ctx, syslog_file)
+	err = syslog.Fit(app_ctx, syslog_file)
 	if err != nil {
 		log.Fatal(err)
 	}

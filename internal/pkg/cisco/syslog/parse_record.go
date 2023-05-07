@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"strings"
 
+	app_context "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/app-context"
 	msg106023 "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/syslog/msg_106023"
 	msg302013 "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/syslog/msg_302013"
 	msg302020 "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/syslog/msg_302020"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 )
 
-func parseRecord(record string, app_ctx AppContext) (network_entities.Flow, error) {
+func parseRecord(record string, app_ctx app_context.AppContext) (network_entities.Flow, error) {
 	var fl network_entities.Flow
 	if len(record) == 0 {
 		return fl, nil
