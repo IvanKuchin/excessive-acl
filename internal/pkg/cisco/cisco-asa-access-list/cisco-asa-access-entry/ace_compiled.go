@@ -9,6 +9,7 @@ import (
 )
 
 func (ace *accessEntryCompiled) AddFlow(flow network_entities.Flow) error {
+	ace.flows = append(ace.flows, flow)
 	return nil
 }
 
@@ -65,16 +66,19 @@ func (ace *accessEntryCompiled) MatchFlow(flow network_entities.Flow) (bool, err
 	case 1: // icmp
 		if ace.proto.ExactMatch(flow.Protocol) {
 			// both protocols are ICMP, so we can check ICMP types and codes
-			if ace.icmp.icmp_code == -1 && ace.icmp.icmp_type == -1 {
-				// both ICMP types and codes are -1, we don't need to check the flow
+			switch {
+			// both ICMP types and codes are -1, we don't need to check the flow
+			case ace.icmp.icmp_code == -1 && ace.icmp.icmp_type == -1:
 				return true, nil
-			} else {
-				// ICMP code is not -1, so we need to check both ICMP type and code
-				if ace.icmp.icmp_type == flow.Icmp_type && ace.icmp.icmp_code == flow.Icmp_code {
-					return true, nil
-				} else {
-					return false, nil
-				}
+			// ICMP code is not -1, so we need to check both ICMP type and code
+			case ace.icmp.icmp_type == flow.Icmp_type && ace.icmp.icmp_code == -1:
+				return true, nil
+			// ICMP code is not -1, so we need to check both ICMP type and code
+			case ace.icmp.icmp_type == flow.Icmp_type && ace.icmp.icmp_code == flow.Icmp_code:
+				return true, nil
+
+			default:
+				return false, nil
 			}
 		} else {
 			// one of protocols is IP, we don't need to check details

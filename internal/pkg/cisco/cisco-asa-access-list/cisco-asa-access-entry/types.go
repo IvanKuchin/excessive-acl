@@ -37,6 +37,8 @@ type accessEntryCompiled struct {
 
 	// --- icmp part
 	icmp icmp_type_code
+
+	flows []network_entities.Flow
 }
 
 type serviceObject struct {
