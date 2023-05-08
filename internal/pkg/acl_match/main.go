@@ -11,7 +11,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func getACLNamessByFlow(flow network_entities.Flow, app_ctx app_context.AppContext) (inbound_acl_name, outbound_acl_name string, err error) {
+func getACLNamesByFlow(flow network_entities.Flow, app_ctx app_context.AppContext) (inbound_acl_name, outbound_acl_name string, err error) {
 	for _, acg := range app_ctx.Access_groups {
 		if acg.Iface == flow.Src_iface && acg.Direction == cisco_asa_acg.Inbound {
 			inbound_acl_name = acg.Acl_name
@@ -22,7 +22,7 @@ func getACLNamessByFlow(flow network_entities.Flow, app_ctx app_context.AppConte
 	return inbound_acl_name, outbound_acl_name, nil
 }
 func getACLsByFlow(flow network_entities.Flow, app_ctx app_context.AppContext) (inbound_acl, outbound_acl *cisco_asa_acl.Accesslist, err error) {
-	inbound_acl_name, outbound_acl_name, err := getACLNamessByFlow(flow, app_ctx)
+	inbound_acl_name, outbound_acl_name, err := getACLNamesByFlow(flow, app_ctx)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -38,7 +38,7 @@ func getACLsByFlow(flow network_entities.Flow, app_ctx app_context.AppContext) (
 }
 
 func StartRoutines(num int, app_ctx app_context.AppContext) error {
-	errs, _ := errgroup.WithContext(context.Background())
+	errs, _ := errgroup.WithContext(context.TODO())
 
 	for i := 0; i < num; i++ {
 		errs.Go(func() error {
@@ -77,5 +77,6 @@ func StartRoutines(num int, app_ctx app_context.AppContext) error {
 
 		})
 	}
-	return nil
+
+	return errs.Wait()
 }

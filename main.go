@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	acl_match "github.com/ivankuchin/excessive-acl/internal/pkg/acl_match"
 	app_context "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/app-context"
 	cisco_asa_acg "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-group"
 	cisco_asa_acl "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list"
@@ -62,6 +63,11 @@ func main() {
 	app_ctx.Flows = make(chan network_entities.Flow, 100)
 
 	err = syslog.Fit(app_ctx, syslog_file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = acl_match.StartRoutines(1, app_ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

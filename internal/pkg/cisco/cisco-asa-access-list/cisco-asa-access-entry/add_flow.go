@@ -7,7 +7,7 @@ import (
 )
 
 func (a *AccessEntry) AddFlow(flow network_entities.Flow) (bool, error) {
-	for i, _ := range a.compiled {
+	for i := range a.compiled {
 		is_match, err := a.compiled[i].MatchFlow(flow)
 		if err != nil {
 			return false, err
