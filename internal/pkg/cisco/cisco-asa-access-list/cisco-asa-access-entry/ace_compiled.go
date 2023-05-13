@@ -3,12 +3,19 @@ package ciscoasaaccessentry
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func (ace *accessEntryCompiled) AddFlow(flow network_entities.Flow) error {
+	if ace.m == nil {
+		ace.m = &sync.Mutex{}
+	}
+
+	ace.m.Lock()
+	defer ace.m.Unlock()
 	ace.flows = append(ace.flows, flow)
 	return nil
 }
@@ -127,4 +134,202 @@ func (compiled accessEntryCompiled) String() string {
 	}
 
 	return str1 + str2
+}
+
+func (ace *accessEntryCompiled) getCapacity() (uint, error) {
+	var src_ip_space, dst_ip_space uint
+	var src_port_space, dst_port_space uint
+	var icmp_type_space, icmp_code_space uint
+
+	src_ip_space += uint(ace.src_addr_range.Finish-ace.src_addr_range.Start) + 1
+	dst_ip_space += uint(ace.dst_addr_range.Finish-ace.dst_addr_range.Start) + 1
+
+	if src_ip_space == 0x100000000 {
+		src_ip_space = 1
+	}
+	if dst_ip_space == 0x100000000 {
+		dst_ip_space = 1
+	}
+
+	switch ace.proto.Id {
+	case 4: // ip
+		return src_ip_space * dst_ip_space, nil
+	case 6, 17: // tcp, udp
+		if ace.src_port_range.finish == 0 {
+			// most protocols uses ephemeral ports to source connections,
+			// we do not take them into account
+			src_port_space = 1
+		} else {
+			src_port_space += uint(ace.src_port_range.finish-ace.src_port_range.start) + 1
+		}
+		if ace.dst_addr_range.Finish == 0 {
+			// if destination ports are not explicitely pointed out, means they probably forgotten
+			// whole tcp port range (1-65535) is open
+			dst_port_space += 65535
+		} else {
+			dst_port_space += uint(ace.dst_port_range.finish-ace.dst_port_range.start) + 1
+		}
+		return src_port_space * src_ip_space * dst_port_space * dst_ip_space, nil
+	case 1: // icmp
+		if ace.icmp_flows.icmp_type == 0 {
+			// calculate ACE capacity
+			if ace.icmp.icmp_type == -1 {
+				icmp_type_space = 256
+			} else {
+				icmp_type_space = 1
+			}
+			if ace.icmp.icmp_code == -1 {
+				icmp_code_space = 256
+			} else {
+				icmp_code_space = 1
+			}
+		} else {
+			// calculate ICMP flows capacity
+			icmp_type_space = uint(ace.icmp_flows.icmp_type)
+			icmp_code_space = uint(ace.icmp_flows.icmp_code)
+		}
+
+		icmp_space := icmp_code_space * icmp_type_space
+		ip_space := src_ip_space * dst_ip_space
+		return ip_space * icmp_space, nil
+	default:
+		error_message := "ERROR: unknown protocol"
+		fmt.Printf("%s (%v)\n", error_message, ace.proto)
+		return 0, errors.New(error_message)
+	}
+}
+
+func (ace *accessEntryCompiled) getFlowsUniqueSrcIPs() uint32 {
+	var ips map[uint32]bool
+	ips = make(map[uint32]bool)
+
+	for _, flow := range ace.flows {
+		ips[flow.Src_ip] = true
+	}
+
+	return uint32(len(ips))
+}
+
+func (ace *accessEntryCompiled) getFlowsUniqueDstIPs() uint32 {
+	var ips map[uint32]bool
+	ips = make(map[uint32]bool)
+
+	for _, flow := range ace.flows {
+		ips[flow.Dst_ip] = true
+	}
+
+	return uint32(len(ips))
+}
+
+func (ace *accessEntryCompiled) getFlowsUniqueSrcPorts() port {
+	var ports map[uint32]bool
+	ports = make(map[uint32]bool)
+
+	for _, flow := range ace.flows {
+		ports[uint32(flow.Src_port)] = true
+	}
+
+	return port(len(ports))
+}
+
+func (ace *accessEntryCompiled) getFlowsUniqueDstPorts() port {
+	var ports map[uint32]bool
+	ports = make(map[uint32]bool)
+
+	for _, flow := range ace.flows {
+		ports[uint32(flow.Dst_port)] = true
+	}
+
+	return port(len(ports))
+}
+
+func (ace *accessEntryCompiled) getFlowsUniqueICMPTypes() int {
+	var types map[uint32]bool
+	types = make(map[uint32]bool)
+
+	for _, flow := range ace.flows {
+		types[uint32(flow.Icmp_type)] = true
+	}
+
+	return len(types)
+}
+
+func (ace *accessEntryCompiled) getFlowsUniqueICMPCodes() int {
+	var codes map[uint32]bool
+	codes = make(map[uint32]bool)
+
+	for _, flow := range ace.flows {
+		codes[uint32(flow.Icmp_code)] = true
+	}
+
+	return len(codes)
+}
+
+func (ace *accessEntryCompiled) getFakeACE() (accessEntryCompiled, error) {
+	fake_ace := accessEntryCompiled{
+		action: ace.action,
+		proto:  ace.proto,
+		// src_addr_range: utils.AddressObject{Start: 1, Finish: ace.getFlowsUniqueSrcIPs()},
+		// dst_addr_range: utils.AddressObject{Start: 1, Finish: ace.getFlowsUniqueDstIPs()},
+	}
+
+	if ace.src_addr_range.Start == 0 && ace.src_addr_range.Finish == 0xffffffff {
+		fake_ace.src_addr_range = utils.AddressObject{Start: 0, Finish: 0xffffffff}
+	} else {
+		fake_ace.src_addr_range = utils.AddressObject{Start: 1, Finish: ace.getFlowsUniqueSrcIPs()}
+	}
+	if ace.dst_addr_range.Start == 0 && ace.dst_addr_range.Finish == 0xffffffff {
+		fake_ace.dst_addr_range = utils.AddressObject{Start: 0, Finish: 0xffffffff}
+	} else {
+		fake_ace.dst_addr_range = utils.AddressObject{Start: 1, Finish: ace.getFlowsUniqueDstIPs()}
+	}
+
+	switch ace.proto.Id {
+	case 4: // ip
+		return fake_ace, nil
+	case 6, 17: // tcp, udp
+		fake_ace.src_port_range = port_range{start: 1, finish: ace.getFlowsUniqueSrcPorts()}
+		fake_ace.dst_port_range = port_range{start: 1, finish: ace.getFlowsUniqueDstPorts()}
+		return fake_ace, nil
+	case 1: // icmp
+		fake_ace.icmp_flows.icmp_type = ace.getFlowsUniqueICMPTypes()
+		fake_ace.icmp_flows.icmp_code = ace.getFlowsUniqueICMPCodes()
+		return fake_ace, nil
+	}
+
+	return fake_ace, nil
+}
+
+func (ace *accessEntryCompiled) getFlowsCapacity() (uint, error) {
+	fake_ace, err := ace.getFakeACE()
+	if err != nil {
+		return 0, err
+	}
+	capacity, err := fake_ace.getCapacity()
+	if err != nil {
+		return 0, err
+	}
+
+	return capacity, nil
+}
+
+func (ace *accessEntryCompiled) Analyze() error {
+	fmt.Printf("\t ACE: %v\n", ace)
+
+	ace_space, err := ace.getCapacity()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("\t ACE capacity: 0x%x\n", ace_space)
+
+	flows_capacity, err := ace.getFlowsCapacity()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("\t # of flows: %v, capacity: 0x%x, ACE capacity utilization(%%): %.3f\n", len(ace.flows), flows_capacity, float64(flows_capacity)/float64(ace_space)*100.0)
+	for _, flow := range ace.flows {
+		fmt.Printf("\t\t %v\n", flow)
+	}
+
+	return nil
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	acl_match "github.com/ivankuchin/excessive-acl/internal/pkg/acl_match"
 	app_context "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/app-context"
@@ -33,17 +34,19 @@ func main() {
 		access_group.Print()
 	}
 
-	// --- parse access-lists in "sh run"
+	// parse access-lists in "sh run"
+	t0 := time.Now()
 	access_lists, err := cisco_asa_acl.Parse(sh_run, access_groups)
 	if err != nil {
 		log.Fatal(err)
 	}
+	t1 := time.Since(t0)
 
 	if len(access_lists) == 0 {
 		log.Println("ERROR: no access-lists found")
 		return
 	}
-	fmt.Println("--- Access-lists")
+	fmt.Printf("--- Access-lists (%v sec)\n", t1.Seconds())
 	for _, acl := range access_lists {
 		acl.Print()
 	}
@@ -62,6 +65,7 @@ func main() {
 	}
 	app_ctx.Flows = make(chan network_entities.Flow, 100)
 
+	t0 = time.Now()
 	err = syslog.Fit(app_ctx, syslog_file)
 	if err != nil {
 		log.Fatal(err)
@@ -71,5 +75,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	t1 = time.Since(t0)
+	fmt.Printf("--- Syslog parsing (%v sec)\n", t1.Seconds())
 
+	t0 = time.Now()
+	fmt.Println("--- Analysis")
+	for _, acl := range access_lists {
+		err := acl.Analyze()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	t1 = time.Since(t0)
+	fmt.Printf("--- Analysis (%v sec)\n", t1.Seconds())
 }

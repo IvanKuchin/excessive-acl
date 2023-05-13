@@ -67,6 +67,18 @@ func (a *Accesslist) AddFlow(flow network_entities.Flow) error {
 	return nil
 }
 
+func (a *Accesslist) Analyze() error {
+	fmt.Println("ACL:", a.Name)
+	for i, _ := range a.aces {
+		err := a.aces[i].Analyze()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (a Accesslist) Print() {
 	fmt.Printf("ACL %s\n", a.Name)
 

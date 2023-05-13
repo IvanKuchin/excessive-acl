@@ -26,3 +26,13 @@ func (a *AccessEntry) AddFlow(flow network_entities.Flow) (bool, error) {
 
 	return false, nil
 }
+
+func (a *AccessEntry) Analyze() error {
+	for i := range a.compiled {
+		err := a.compiled[i].Analyze()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
