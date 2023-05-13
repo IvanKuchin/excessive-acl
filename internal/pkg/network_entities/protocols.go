@@ -257,3 +257,23 @@ func init() {
 	// log.Println(Protocols_map["IPv4"].IsProtoMatch(Protocols_map["UDP"]))
 	// log.Println(Protocols_map["UDP"].IsProtoMatch(Protocols_map["IPv4"]))
 }
+
+func (proto *Protocol) Match(proto2 *Protocol) bool {
+	if proto.Id == proto2.Id {
+		return true
+	}
+	if proto.Id == 4 { // IPv4
+		return true
+	}
+	if proto2.Id == 4 { // IPv4
+		return true
+	}
+	return false
+}
+
+func (proto *Protocol) ExactMatch(proto2 *Protocol) bool {
+	if proto.Id == proto2.Id {
+		return true
+	}
+	return false
+}

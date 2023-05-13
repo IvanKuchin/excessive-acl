@@ -1,6 +1,8 @@
 package ciscoasaaccessentry
 
 import (
+	"sync"
+
 	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
@@ -37,6 +39,13 @@ type accessEntryCompiled struct {
 
 	// --- icmp part
 	icmp icmp_type_code
+
+	// --- flows mutex
+	m *sync.Mutex
+	// --- flows matched that acl entry
+	flows []network_entities.Flow
+	// --- count number of icmp flows
+	icmp_flows icmp_type_code
 }
 
 type serviceObject struct {

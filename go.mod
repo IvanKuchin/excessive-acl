@@ -2,7 +2,10 @@ module github.com/ivankuchin/excessive-acl
 
 go 1.20
 
-require github.com/spf13/cobra v1.7.0
+require (
+	github.com/spf13/cobra v1.7.0
+	golang.org/x/sync v0.1.0
+)
 
 require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

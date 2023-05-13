@@ -175,39 +175,7 @@ func (ace *AccessEntry) parseExtended(fields []string) error {
 func (ace *AccessEntry) Print() {
 	fmt.Printf("ACE: %s\n", ace.line)
 	for _, compiled := range ace.compiled {
-		fmt.Printf("  %v %v %v-%v",
-			compiled.action,
-			compiled.proto.Title,
-			utils.IpToString(compiled.src_addr_range.Start), utils.IpToString(compiled.src_addr_range.Finish),
-		)
-		switch {
-		case compiled.icmp.icmp_code != -1 || compiled.icmp.icmp_type != -1:
-			fmt.Printf("  %v-%v %v %v\n",
-				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
-				compiled.icmp.icmp_type, compiled.icmp.icmp_code,
-			)
-		case compiled.src_port_range.finish != 0 && compiled.dst_port_range.finish != 0:
-			fmt.Printf(":%v-%v %v-%v:%v-%v\n",
-				compiled.src_port_range.start, compiled.src_port_range.finish,
-				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
-				compiled.dst_port_range.start, compiled.dst_port_range.finish,
-			)
-		case compiled.src_port_range.finish != 0:
-			fmt.Printf(":%v-%v %v-%v\n",
-				compiled.src_port_range.start, compiled.src_port_range.finish,
-				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
-			)
-		case compiled.dst_port_range.finish != 0:
-			fmt.Printf(" %v-%v:%v-%v\n",
-				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
-				compiled.dst_port_range.start, compiled.dst_port_range.finish,
-			)
-		default:
-			fmt.Printf(" %v-%v\n",
-				utils.IpToString(compiled.dst_addr_range.Start), utils.IpToString(compiled.dst_addr_range.Finish),
-			)
-
-		}
+		fmt.Printf("  %s\n", compiled)
 	}
 }
 

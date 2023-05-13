@@ -1,4 +1,4 @@
-ciscoasa(config)# sh route
+ciscoasa(config)# sh route   
 
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
@@ -11,17 +11,12 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 Gateway of last resort is 123.123.123.2 to network 0.0.0.0
 
 S*       0.0.0.0 0.0.0.0 [1/0] via 123.123.123.2, outside
-B        10.10.9.0 255.255.255.0 [200/0] via 192.168.0.2, 00:07:01
+B        10.10.9.0 255.255.255.0 [200/0] via 192.168.0.2, 1w1d
 C        123.123.123.0 255.255.255.0 is directly connected, outside
 L        123.123.123.1 255.255.255.255 is directly connected, outside
+C        172.16.0.0 255.255.255.0 is directly connected, dmz
+L        172.16.0.1 255.255.255.255 is directly connected, dmz
+B        172.16.16.0 255.255.255.0 [200/0] via 172.16.0.2, 4d08h
 C        192.168.0.0 255.255.255.0 is directly connected, inside
 L        192.168.0.1 255.255.255.255 is directly connected, inside
 S        200.200.200.0 255.255.255.0 [1/0] via 123.123.123.3, outside
-
-C        10.0.0.0 255.0.0.0 is directly connected, inside
-C        10.11.0.0 255.255.0.0 is directly connected, inside
-C        10.21.0.0 255.255.0.0 is directly connected, inside
-C        10.31.0.0 255.255.0.0 is directly connected, inside
-C        10.11.12.0 255.255.255.0 is directly connected, inside
-C        10.11.13.0 255.255.255.0 is directly connected, inside
-C        10.11.14.0 255.255.255.0 is directly connected, inside

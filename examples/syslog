@@ -1,0 +1,31 @@
+%ASA-6-302020: Built outbound ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/9 laddr 10.10.9.9/9 type 8 code 0 
+%ASA-6-302021: Teardown ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/9 laddr 10.10.9.9/9 type 8 code 0 
+%ASA-7-609002: Teardown local-host inside:10.10.9.9 duration 0:00:00
+%ASA-7-609002: Teardown local-host outside:10.10.10.10 duration 0:00:00
+
+
+%ASA-7-710005: UDP request discarded from 0.0.0.0/68 to outside:255.255.255.255/67
+%ASA-4-106023: Deny icmp src inside:10.10.9.9 dst outside:10.10.10.10 (type 8, code 0) by access-group "test" [0x0, 0x0]
+%ASA-7-710005: UDP request discarded from 0.0.0.0/68 to inside:255.255.255.255/67
+%ASA-4-106023: Deny icmp src inside:10.10.9.9 dst outside:10.10.10.10 (type 8, code 0) by access-group "test" [0x0, 0x0]
+%ASA-4-106023: Deny icmp src inside:10.10.9.9 dst outside:10.10.10.10 (type 8, code 0) by access-group "test" [0x0, 0x0]
+
+
+
+%ASA-6-302020: Built outbound ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/17411 laddr 10.10.9.9/17411 type 8 code 0 
+%ASA-6-302021: Teardown ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/17411 laddr 10.10.9.9/17411 type 8 code 0 
+
+
+%ASA-7-609001: Built local-host outside:150.150.150.150
+%ASA-6-302020: Built outbound ICMP connection for faddr 150.150.150.150/0 gaddr 123.123.123.1/34574 laddr 10.10.9.9/34574 type 8 code 0 
+%ASA-6-302021: Teardown ICMP connection for faddr 150.150.150.150/0 gaddr 123.123.123.1/34574 laddr 10.10.9.9/34574 type 8 code 0 
+%ASA-7-609002: Teardown local-host outside:150.150.150.150 duration 0:00:00
+
+
+
+%ASA-6-302013: Built inbound TCP connection 54 for outside:150.150.150.150/57346 (150.150.150.150/57346) to dmz:172.16.16.16/22 (123.123.123.10/22)
+%ASA-6-302014: Teardown TCP connection 54 for outside:150.150.150.150/57346 to dmz:172.16.16.16/22 duration 0:12:02 bytes 3214 FIN Timeout from dmz
+
+%ASA-4-106023: Deny tcp src inside:10.10.9.9/45306 dst outside:150.150.150.150/22 by access-group "inside_in" [0x6643b58b, 0x0]
+%ASA-6-302015: Built outbound UDP connection 54 for outside:150.150.150.150/22 (150.150.150.150/2) to dmz:172.16.16.16/57346 (123.123.123.10/7346)
+%ASA-6-302020: Built inbound ICMP connection for faddr 150.150.150.150/0 gaddr 123.123.123.1/34574 laddr 172.16.16.16/34574 type 8 code 0 

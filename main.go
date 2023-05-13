@@ -3,12 +3,16 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
+	acl_match "github.com/ivankuchin/excessive-acl/internal/pkg/acl_match"
+	app_context "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/app-context"
 	cisco_asa_acg "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-group"
 	cisco_asa_acl "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list"
 	sh_ip_route "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/sh-ip-route"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/cisco/syslog"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/cmd"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
 )
 
 func main() {
@@ -30,17 +34,19 @@ func main() {
 		access_group.Print()
 	}
 
-	// --- parse access-lists in "sh run"
+	// parse access-lists in "sh run"
+	t0 := time.Now()
 	access_lists, err := cisco_asa_acl.Parse(sh_run, access_groups)
 	if err != nil {
 		log.Fatal(err)
 	}
+	t1 := time.Since(t0)
 
 	if len(access_lists) == 0 {
 		log.Println("ERROR: no access-lists found")
 		return
 	}
-	fmt.Println("--- Access-lists")
+	fmt.Printf("--- Access-lists (%v sec)\n", t1.Seconds())
 	for _, acl := range access_lists {
 		acl.Print()
 	}
@@ -52,15 +58,34 @@ func main() {
 
 	routing_table.PrintTree()
 
-	ctx := syslog.Context{
+	app_ctx := app_context.AppContext{
 		Access_groups: access_groups,
 		Access_lists:  access_lists,
 		Routing_table: routing_table,
 	}
+	app_ctx.Flows = make(chan network_entities.Flow, 100)
 
-	err = syslog.Parse(ctx, syslog_file)
+	t0 = time.Now()
+	err = syslog.Fit(app_ctx, syslog_file)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	err = acl_match.StartRoutines(1, app_ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	t1 = time.Since(t0)
+	fmt.Printf("--- Syslog parsing (%v sec)\n", t1.Seconds())
+
+	t0 = time.Now()
+	fmt.Println("--- Analysis")
+	for _, acl := range access_lists {
+		err := acl.Analyze()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	t1 = time.Since(t0)
+	fmt.Printf("--- Analysis (%v sec)\n", t1.Seconds())
 }
