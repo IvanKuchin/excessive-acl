@@ -206,7 +206,7 @@ func Test_accessEntryCompiled_calculateCoveredSpace(t *testing.T) {
 				dst_port_range: port_range{22, 22},
 				icmp:           icmp_type_code{icmp_type: -1, icmp_code: -1},
 			},
-			want:    (0xffffffff+1)*1 + 0x1*1,
+			want:    (0x1) * 1 * 0x1 * 1,
 			wantErr: false,
 		},
 		{
@@ -220,7 +220,7 @@ func Test_accessEntryCompiled_calculateCoveredSpace(t *testing.T) {
 				dst_port_range: port_range{22, 23},
 				icmp:           icmp_type_code{icmp_type: -1, icmp_code: -1},
 			},
-			want:    (0xffffffff+1)*1 + 0x1*2,
+			want:    (0x1) * 1 * 0x1 * 2,
 			wantErr: false,
 		},
 		{
