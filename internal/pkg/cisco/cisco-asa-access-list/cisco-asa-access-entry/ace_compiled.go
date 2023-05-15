@@ -141,8 +141,8 @@ func (ace *accessEntryCompiled) getCapacity() (uint, error) {
 	var src_port_space, dst_port_space uint
 	var icmp_type_space, icmp_code_space uint
 
-	src_ip_space += uint(ace.src_addr_range.Finish-ace.src_addr_range.Start) + 1
-	dst_ip_space += uint(ace.dst_addr_range.Finish-ace.dst_addr_range.Start) + 1
+	src_ip_space += uint(int(ace.src_addr_range.Finish) - int(ace.src_addr_range.Start) + 1)
+	dst_ip_space += uint(int(ace.dst_addr_range.Finish) - int(ace.dst_addr_range.Start) + 1)
 
 	if src_ip_space == 0x100000000 {
 		src_ip_space = 1
@@ -314,13 +314,12 @@ func (ace *accessEntryCompiled) getFlowsCapacity() (uint, error) {
 }
 
 func (ace *accessEntryCompiled) Analyze() error {
-	fmt.Printf("\t ACE: %v\n", ace)
 
 	ace_space, err := ace.getCapacity()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\t ACE capacity: 0x%x\n", ace_space)
+	fmt.Printf("\t ACE: capacity 0x%x, %v\n", ace_space, ace)
 
 	flows_capacity, err := ace.getFlowsCapacity()
 	if err != nil {

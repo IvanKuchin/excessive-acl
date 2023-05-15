@@ -58,6 +58,8 @@ func main() {
 
 	routing_table.PrintTree()
 
+	fmt.Printf("--- Syslog parsing \n")
+
 	app_ctx := app_context.AppContext{
 		Access_groups: access_groups,
 		Access_lists:  access_lists,
