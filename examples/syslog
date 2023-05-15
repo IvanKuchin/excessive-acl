@@ -1,3 +1,5 @@
+%ASA-4-106023: Deny tcp src Outside:106.14.121.181/56526 dst DMZ2:204.99.12.125/6379 by access-group ""acl_outside"" [0x0, 0x0]
+%ASA-4-106023: Deny tcp src Outside:94.102.61.5/49723 dst Inside:204.99.84.18/12266 by access-group ""acl_outside"" [0x0, 0x0]
 %ASA-6-302020: Built outbound ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/9 laddr 10.10.9.9/9 type 8 code 0 
 %ASA-6-302021: Teardown ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/9 laddr 10.10.9.9/9 type 8 code 0 
 %ASA-7-609002: Teardown local-host inside:10.10.9.9 duration 0:00:00

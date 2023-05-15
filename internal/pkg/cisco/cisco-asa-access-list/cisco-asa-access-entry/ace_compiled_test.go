@@ -188,7 +188,7 @@ func Test_accessEntryCompiled_MatchFlow(t *testing.T) {
 	}
 }
 
-func Test_accessEntryCompiled_calculateCoveredSpace(t *testing.T) {
+func Test_accessEntryCompiled_getCapacity(t *testing.T) {
 	tests := []struct {
 		name    string
 		ace     *accessEntryCompiled
@@ -273,6 +273,30 @@ func Test_accessEntryCompiled_calculateCoveredSpace(t *testing.T) {
 			want:    (0x0 + 1) * (0x0 + 1),
 			wantErr: false,
 		},
+		{
+			name: "IP src any",
+			ace: &accessEntryCompiled{
+				action:         permit,
+				proto:          &network_entities.Protocol{Id: 4, Title: "ipv4"},
+				src_addr_range: utils.AddressObject{Start: 0x0, Finish: 0xffffffff},
+				dst_addr_range: utils.AddressObject{Start: 0x0a0a0a0a, Finish: 0x0a0a0a0a},
+				icmp:           icmp_type_code{icmp_type: -1, icmp_code: -1},
+			},
+			want:    0x1 * 0x1,
+			wantErr: false,
+		},
+		{
+			name: "zero flows",
+			ace: &accessEntryCompiled{
+				action:         permit,
+				proto:          &network_entities.Protocol{Id: 4, Title: "ipv4"},
+				src_addr_range: utils.AddressObject{Start: 0x1, Finish: 0x0},
+				dst_addr_range: utils.AddressObject{Start: 0x1, Finish: 0x0},
+				icmp:           icmp_type_code{icmp_type: -1, icmp_code: -1},
+			},
+			want:    0x0,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -283,6 +307,23 @@ func Test_accessEntryCompiled_calculateCoveredSpace(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("accessEntryCompiled.calculateCoveredSpace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_accessEntryCompiled_Analyze(t *testing.T) {
+	tests := []struct {
+		name    string
+		ace     *accessEntryCompiled
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.ace.Analyze(); (err != nil) != tt.wantErr {
+				t.Errorf("accessEntryCompiled.Analyze() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

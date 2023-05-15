@@ -141,8 +141,8 @@ func (ace *accessEntryCompiled) getCapacity() (uint, error) {
 	var src_port_space, dst_port_space uint
 	var icmp_type_space, icmp_code_space uint
 
-	src_ip_space += uint(ace.src_addr_range.Finish - ace.src_addr_range.Start + 1)
-	dst_ip_space += uint(ace.dst_addr_range.Finish - ace.dst_addr_range.Start + 1)
+	src_ip_space += uint(int(ace.src_addr_range.Finish) - int(ace.src_addr_range.Start) + 1)
+	dst_ip_space += uint(int(ace.dst_addr_range.Finish) - int(ace.dst_addr_range.Start) + 1)
 
 	if src_ip_space == 0x100000000 {
 		src_ip_space = 1
@@ -160,14 +160,14 @@ func (ace *accessEntryCompiled) getCapacity() (uint, error) {
 			// we do not take them into account
 			src_port_space = 1
 		} else {
-			src_port_space += uint(ace.src_port_range.finish - ace.src_port_range.start + 1)
+			src_port_space += uint(ace.src_port_range.finish-ace.src_port_range.start) + 1
 		}
 		if ace.dst_addr_range.Finish == 0 {
 			// if destination ports are not explicitely pointed out, means they probably forgotten
 			// whole tcp port range (1-65535) is open
 			dst_port_space += 65535
 		} else {
-			dst_port_space += uint(ace.dst_port_range.finish - ace.dst_port_range.start + 1)
+			dst_port_space += uint(ace.dst_port_range.finish-ace.dst_port_range.start) + 1
 		}
 		return src_port_space * src_ip_space * dst_port_space * dst_ip_space, nil
 	case 1: // icmp
