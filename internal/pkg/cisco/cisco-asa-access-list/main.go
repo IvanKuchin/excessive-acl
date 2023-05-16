@@ -54,7 +54,7 @@ func Parse(in_file string, access_groups []cisco_asa_access_group.Accessgroup) (
 }
 
 func (a *Accesslist) AddFlow(flow network_entities.Flow) error {
-	for i, _ := range a.aces {
+	for i := range a.aces {
 		flow_added, err := a.aces[i].AddFlow(flow)
 		if err != nil {
 			return err
@@ -69,7 +69,7 @@ func (a *Accesslist) AddFlow(flow network_entities.Flow) error {
 
 func (a *Accesslist) Analyze() error {
 	fmt.Println("ACL:", a.Name)
-	for i, _ := range a.aces {
+	for i := range a.aces {
 		err := a.aces[i].Analyze()
 		if err != nil {
 			return err
