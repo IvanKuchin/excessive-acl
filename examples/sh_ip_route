@@ -12,6 +12,7 @@ Gateway of last resort is 123.123.123.2 to network 0.0.0.0
 
 S*       0.0.0.0 0.0.0.0 [1/0] via 123.123.123.2, outside
 B        10.10.9.0 255.255.255.0 [200/0] via 192.168.0.2, 1w1d
+B        10.10.10.0 255.255.255.0 [200/0] via 192.168.0.2, 1w1d
 C        123.123.123.0 255.255.255.0 is directly connected, outside
 L        123.123.123.1 255.255.255.255 is directly connected, outside
 C        172.16.0.0 255.255.255.0 is directly connected, dmz

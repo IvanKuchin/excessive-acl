@@ -288,7 +288,13 @@ func (ace *accessEntryCompiled) getFakeACE() (accessEntryCompiled, error) {
 	case 4: // ip
 		return fake_ace, nil
 	case 6, 17: // tcp, udp
-		fake_ace.src_port_range = port_range{start: 1, finish: ace.getFlowsUniqueSrcPorts()}
+		if ace.src_port_range.finish == 0 {
+			// most protocols uses ephemeral ports to source connections,
+			// we do not take them into account
+			fake_ace.src_port_range = port_range{start: 1, finish: 1}
+		} else {
+			fake_ace.src_port_range = port_range{start: 1, finish: ace.getFlowsUniqueSrcPorts()}
+		}
 		fake_ace.dst_port_range = port_range{start: 1, finish: ace.getFlowsUniqueDstPorts()}
 		return fake_ace, nil
 	case 1: // icmp

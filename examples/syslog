@@ -9,9 +9,8 @@
 %ASA-7-710005: UDP request discarded from 0.0.0.0/68 to outside:255.255.255.255/67
 %ASA-4-106023: Deny icmp src inside:10.10.9.9 dst outside:10.10.10.10 (type 8, code 0) by access-group "test" [0x0, 0x0]
 %ASA-7-710005: UDP request discarded from 0.0.0.0/68 to inside:255.255.255.255/67
-%ASA-4-106023: Deny icmp src inside:10.10.9.9 dst outside:10.10.10.10 (type 8, code 0) by access-group "test" [0x0, 0x0]
-%ASA-4-106023: Deny icmp src inside:10.10.90.90 dst outside:10.10.10.10 (type 8, code 0) by access-group "test" [0x0, 0x0]
-
+%ASA-4-106023: Deny icmp src inside:10.10.9.9 dst outside:8.8.8.8 (type 8, code 0) by access-group "test" [0x0, 0x0]
+%ASA-4-106023: Deny icmp src inside:10.10.90.90 dst outside:8.8.8.8 (type 8, code 0) by access-group "test" [0x0, 0x0]
 
 
 %ASA-6-302020: Built outbound ICMP connection for faddr 10.10.10.10/0 gaddr 10.10.9.9/17411 laddr 10.10.9.9/17411 type 8 code 0 
@@ -32,3 +31,6 @@
 %ASA-6-302015: Built outbound UDP connection 54 for outside:150.150.150.150/22 (150.150.150.150/2) to dmz:172.16.16.16/57346 (123.123.123.10/7346)
 %ASA-6-302020: Built inbound ICMP connection for faddr 150.150.150.150/0 gaddr 123.123.123.1/34574 laddr 172.16.16.16/34574 type 8 code 0 
 %ASA-6-302020: Built inbound ICMP connection for faddr 50.50.50.50/0 gaddr 123.123.123.1/34574 laddr 172.16.16.16/34574 type 8 code 0 
+
+%ASA-6-302015: Built outbound TCP connection 111 for outside:150.150.150.150/22 (150.150.150.150/2) to inside:10.10.10.10/57346 (123.123.123.10/7346)
+%ASA-6-302015: Built outbound TCP connection 112 for outside:151.151.151.151/22 (151.151.151.151/2) to inside:10.10.10.10/57347 (123.123.123.10/7346)

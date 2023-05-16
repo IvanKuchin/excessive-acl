@@ -21,7 +21,7 @@ func main() {
 	sh_run, ip_route_file, syslog_file := cmd.Sh_run, cmd.Sh_route, cmd.Syslog
 	num_goroutines := cmd.Go_routines
 
-	utils.SetLogLevel(utils.Critical)
+	utils.SetLogLevel(utils.Info)
 
 	// --- parse access-groups in "sh run"
 	access_groups, err := cisco_asa_acg.Parse(sh_run)
@@ -90,7 +90,7 @@ func main() {
 		log.Fatal(err)
 	}
 	t1 = time.Since(t0)
-	fmt.Printf("\n=== Syslog parsing (%v sec)\n", t1.Seconds())
+	fmt.Printf("=== Syslog parsing (%v sec)\n", t1.Seconds())
 
 	t0 = time.Now()
 	fmt.Println("--- Analysis")
