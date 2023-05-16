@@ -8,6 +8,7 @@ import (
 	cisco_asa_acg "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-group"
 	cisco_asa_acl "github.com/ivankuchin/excessive-acl/internal/pkg/cisco/cisco-asa-access-list"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -52,12 +53,14 @@ func StartRoutines(num int, app_ctx app_context.AppContext) error {
 					return err
 				}
 
-				fmt.Printf("flow: %s\n", flow)
-				if inbound_acl != nil {
-					fmt.Printf("\tinbound_acl: %s\n", inbound_acl.Name)
-				}
-				if outbound_acl != nil {
-					fmt.Printf("\toutbound_acl: %s\n", outbound_acl.Name)
+				if utils.GetLogLevel() == utils.Trace {
+					fmt.Printf("flow: %s\n", flow)
+					if inbound_acl != nil {
+						fmt.Printf("\tinbound_acl: %s\n", inbound_acl.Name)
+					}
+					if outbound_acl != nil {
+						fmt.Printf("\toutbound_acl: %s\n", outbound_acl.Name)
+					}
 				}
 
 				if inbound_acl != nil {

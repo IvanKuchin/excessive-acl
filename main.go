@@ -13,11 +13,15 @@ import (
 	"github.com/ivankuchin/excessive-acl/internal/pkg/cisco/syslog"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/cmd"
 	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func main() {
 	cmd.Execute()
 	sh_run, ip_route_file, syslog_file := cmd.Sh_run, cmd.Sh_route, cmd.Syslog
+	num_goroutines := cmd.Go_routines
+
+	utils.SetLogLevel(utils.Critical)
 
 	// --- parse access-groups in "sh run"
 	access_groups, err := cisco_asa_acg.Parse(sh_run)
@@ -46,17 +50,25 @@ func main() {
 		log.Println("ERROR: no access-lists found")
 		return
 	}
-	fmt.Printf("--- Access-lists (%v sec)\n", t1.Seconds())
-	for _, acl := range access_lists {
-		acl.Print()
-	}
 
+	fmt.Printf("--- Access-lists\n")
+	if utils.GetLogLevel() == utils.Trace {
+		for _, acl := range access_lists {
+			acl.Print()
+		}
+	}
+	fmt.Printf("=== Access-lists (%v sec)\n", t1.Seconds())
+
+	fmt.Printf("--- Routing table\n")
 	routing_table, err := sh_ip_route.Fit(ip_route_file)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	routing_table.PrintTree()
+	if utils.GetLogLevel() == utils.Trace {
+		routing_table.PrintTree()
+	}
+	fmt.Printf("=== Routing table\n")
 
 	fmt.Printf("--- Syslog parsing \n")
 
@@ -73,12 +85,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = acl_match.StartRoutines(1, app_ctx)
+	err = acl_match.StartRoutines(int(num_goroutines), app_ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 	t1 = time.Since(t0)
-	fmt.Printf("--- Syslog parsing (%v sec)\n", t1.Seconds())
+	fmt.Printf("\n=== Syslog parsing (%v sec)\n", t1.Seconds())
 
 	t0 = time.Now()
 	fmt.Println("--- Analysis")
@@ -89,5 +101,5 @@ func main() {
 		}
 	}
 	t1 = time.Since(t0)
-	fmt.Printf("--- Analysis (%v sec)\n", t1.Seconds())
+	fmt.Printf("=== Analysis (%v sec)\n", t1.Seconds())
 }

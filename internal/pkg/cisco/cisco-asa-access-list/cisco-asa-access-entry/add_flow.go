@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ivankuchin/excessive-acl/internal/pkg/network_entities"
+	"github.com/ivankuchin/excessive-acl/internal/pkg/utils"
 )
 
 func (a *AccessEntry) AddFlow(flow network_entities.Flow) (bool, error) {
@@ -13,7 +14,9 @@ func (a *AccessEntry) AddFlow(flow network_entities.Flow) (bool, error) {
 			return false, err
 		}
 
-		fmt.Printf("\tis_match: %v\n\t\t%s\n\t\t%s\n", is_match, a.compiled[i], flow)
+		if utils.GetLogLevel() == utils.Trace {
+			fmt.Printf("\tis_match: %v\n\t\t%s\n\t\t%s\n", is_match, a.compiled[i], flow)
+		}
 
 		if is_match {
 			err = a.compiled[i].AddFlow(flow)

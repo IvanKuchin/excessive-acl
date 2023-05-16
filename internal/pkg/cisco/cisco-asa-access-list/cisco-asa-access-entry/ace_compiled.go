@@ -162,10 +162,10 @@ func (ace *accessEntryCompiled) getCapacity() (uint, error) {
 		} else {
 			src_port_space += uint(ace.src_port_range.finish-ace.src_port_range.start) + 1
 		}
-		if ace.dst_addr_range.Finish == 0 {
+		if ace.dst_port_range.finish == 0 {
 			// if destination ports are not explicitely pointed out, means they probably forgotten
 			// whole tcp port range (1-65535) is open
-			dst_port_space += 65535
+			dst_port_space += 65536
 		} else {
 			dst_port_space += uint(ace.dst_port_range.finish-ace.dst_port_range.start) + 1
 		}
