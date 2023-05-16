@@ -341,3 +341,82 @@ func Test_accessEntryCompiled_Analyze(t *testing.T) {
 		})
 	}
 }
+
+func Test_accessEntryCompiled_getFlowsCapacity(t *testing.T) {
+	tests := []struct {
+		name    string
+		ace     *accessEntryCompiled
+		want    uint
+		wantErr bool
+	}{
+		{
+			name: "Basic test",
+			ace: &accessEntryCompiled{
+				action:         permit,
+				proto:          &network_entities.Protocol{Id: 6, Title: "tcp"},
+				src_addr_range: utils.AddressObject{Start: 0x0, Finish: 0xffffffff},
+				dst_addr_range: utils.AddressObject{Start: 0x0a0a0a0a, Finish: 0x0a0a0a0a},
+				src_port_range: port_range{0, 0},
+				dst_port_range: port_range{22, 22},
+				flows: []network_entities.Flow{
+					{
+						Protocol:  &network_entities.Protocol{Id: 6, Title: "tcp"},
+						Src_iface: "inside",
+						Dst_iface: "outside",
+						Src_ip:    0x0a0a0a0a,
+						Dst_ip:    0x0a0a0a0a,
+						Src_port:  1024,
+						Dst_port:  22,
+					},
+				},
+			},
+			want:    1 * 1 * 1 * 1,
+			wantErr: false,
+		},
+		{
+			name: "Two flows matching same ACE",
+			ace: &accessEntryCompiled{
+				action:         permit,
+				proto:          &network_entities.Protocol{Id: 6, Title: "tcp"},
+				src_addr_range: utils.AddressObject{Start: 0x0, Finish: 0xffffffff},
+				dst_addr_range: utils.AddressObject{Start: 0x0a0a0a0a, Finish: 0x0a0a0a0a},
+				src_port_range: port_range{0, 0},
+				dst_port_range: port_range{22, 22},
+				flows: []network_entities.Flow{
+					{
+						Protocol:  &network_entities.Protocol{Id: 6, Title: "tcp"},
+						Src_iface: "inside",
+						Dst_iface: "outside",
+						Src_ip:    0x0a0a0a0a,
+						Dst_ip:    0x0a0a0a0a,
+						Src_port:  1024,
+						Dst_port:  22,
+					},
+					{
+						Protocol:  &network_entities.Protocol{Id: 6, Title: "tcp"},
+						Src_iface: "inside",
+						Dst_iface: "outside",
+						Src_ip:    0x0a0a0a0a,
+						Dst_ip:    0x0a0a0a0a,
+						Src_port:  1025,
+						Dst_port:  22,
+					},
+				},
+			},
+			want:    1 * 1 * 1 * 1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.ace.getFlowsCapacity()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("accessEntryCompiled.getFlowsCapacity() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("accessEntryCompiled.getFlowsCapacity() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
