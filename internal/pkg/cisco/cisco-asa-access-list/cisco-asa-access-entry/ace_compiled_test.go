@@ -274,6 +274,19 @@ func Test_accessEntryCompiled_getCapacity(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "TCP empty dst port range",
+			ace: &accessEntryCompiled{
+				action:         permit,
+				proto:          &network_entities.Protocol{Id: 6, Title: "tcp"},
+				src_addr_range: utils.AddressObject{Start: 0x0, Finish: 0xffffffff},
+				dst_addr_range: utils.AddressObject{Start: 0x0a0a0a0a, Finish: 0x0a0a0a0a},
+				dst_port_range: port_range{0, 0},
+				icmp:           icmp_type_code{icmp_type: -1, icmp_code: -1},
+			},
+			want:    0x1 * 0x1 * 0x10000,
+			wantErr: false,
+		},
+		{
 			name: "IP src any",
 			ace: &accessEntryCompiled{
 				action:         permit,

@@ -7,6 +7,7 @@ import (
 var Sh_run string
 var Sh_route string
 var Syslog string
+var Go_routines int16
 
 var rootCmd = &cobra.Command{
 	Use:   "excessive-acl",
@@ -25,6 +26,8 @@ func init() {
 
 	rootCmd.Flags().StringVarP(&Sh_route, "sh-ip-route", "i", "", "file with \"show ip route\" output")
 	rootCmd.MarkFlagRequired("sh-ip-route")
+
+	rootCmd.Flags().Int16VarP(&Go_routines, "go-routines", "g", 1, "number of go routines to process syslog messages")
 }
 
 func Execute() {

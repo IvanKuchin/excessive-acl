@@ -61,8 +61,6 @@ func StartRoutines(num int, app_ctx app_context.AppContext) error {
 					if outbound_acl != nil {
 						fmt.Printf("\toutbound_acl: %s\n", outbound_acl.Name)
 					}
-				} else {
-					fmt.Print(".")
 				}
 
 				if inbound_acl != nil {

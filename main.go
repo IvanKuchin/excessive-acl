@@ -19,6 +19,7 @@ import (
 func main() {
 	cmd.Execute()
 	sh_run, ip_route_file, syslog_file := cmd.Sh_run, cmd.Sh_route, cmd.Syslog
+	num_goroutines := cmd.Go_routines
 
 	utils.SetLogLevel(utils.Critical)
 
@@ -84,7 +85,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = acl_match.StartRoutines(1, app_ctx)
+	err = acl_match.StartRoutines(int(num_goroutines), app_ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
