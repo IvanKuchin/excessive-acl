@@ -325,15 +325,15 @@ func (ace *accessEntryCompiled) Analyze() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\t ACE: capacity 0x%x, %v\n", ace_space, ace)
+	fmt.Printf("\t\tACE compiled: capacity 0x%x, %v\n", ace_space, ace)
 
 	flows_capacity, err := ace.getFlowsCapacity()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\t # of flows: %v, capacity: 0x%x, ACE capacity utilization(%%): %.3f\n", len(ace.flows), flows_capacity, float64(flows_capacity)/float64(ace_space)*100.0)
+	fmt.Printf("\t\t# of flows: %v, capacity: 0x%x, ACE capacity utilization(%%): %.3f\n", len(ace.flows), flows_capacity, float64(flows_capacity)/float64(ace_space)*100.0)
 	for _, flow := range ace.flows {
-		fmt.Printf("\t\t %v\n", flow)
+		fmt.Printf("\t\t\t %v\n", flow)
 	}
 
 	return nil
