@@ -1,5 +1,5 @@
 # excessive-acl
-App correlates syslog messages emmited by a Cisco ASA against access-lists applied to interfaces
+App correlates syslog messages emitted by a Cisco ASA against access-lists applied to interfaces
 
 ## Use case
 Identification of ACL-entries that are over-permissive based on past traffic. 
