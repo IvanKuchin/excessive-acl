@@ -31,6 +31,7 @@ func (a *AccessEntry) AddFlow(flow network_entities.Flow) (bool, error) {
 }
 
 func (a *AccessEntry) Analyze() error {
+	fmt.Printf("\tACE: %s\n", a.line)
 	for i := range a.compiled {
 		err := a.compiled[i].Analyze()
 		if err != nil {
