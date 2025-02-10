@@ -83,7 +83,7 @@ Capacity 512 (0x200) = single host * 256 hosts * 2 tcp ports
 
 permit tcp any 2.2.2.0 255.255.255.0 range 22 23<br>
 Capacity 512 (0x200) = single host * 256 hosts * 2 tcp ports
-> Comment: any-keyword have capacity 1 to keep numbers low. I assume you can search through ACL for word *any*.
+> Comment: any-keyword have capacity 1 to keep numbers low. "any" used in ACL as a placeholder that does't require optimization. For exapmle: above example allow SSH from the internet to specific subnet and optimization on src IPs not needed. 
 
 *ICMP-flows*
 
